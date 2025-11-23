@@ -5,4 +5,5 @@
     <string name="title_activity_spotify">SpotifyActivity</string>
     <string name="title_activity_card">CardActivity</string>
     <string name="title_activity_sign_in">SignInActivity</string>
+    <string name="title_activity_registration">RegistrationActivity</string>
 </resources>
