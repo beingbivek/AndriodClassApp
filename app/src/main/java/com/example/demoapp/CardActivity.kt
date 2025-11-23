@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +21,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.demoapp.ui.theme.Green
 
 class CardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +54,66 @@ class CardActivity : ComponentActivity() {
 }
 
 @Composable
+fun HomeMenuCard(
+    iconRes: Int,
+    title: String,
+    subtitle: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        onClick = onClick
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(iconRes),
+                contentDescription = null,
+                modifier = Modifier.size(40.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(title, fontWeight = FontWeight.Bold)
+            Text(subtitle, fontSize = 11.sp, color = Color.Gray)
+        }
+    }
+}
+
+@Composable
+fun GradientBankCard(
+    title: String,
+    line1: String? = null,
+    line2: String? = null,
+    brush: Brush,
+    modifier: Modifier
+) {
+    Card(
+        modifier = modifier.background(brush, RoundedCornerShape(18.dp)),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(title, color = Color.White, fontWeight = FontWeight.Bold, maxLines = 1)
+            if (line1 != null) {
+                Text(line1, color = Color.White, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+            if (line2 != null) {
+                Text(line2, color = Color.White, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+        }
+    }
+}
+
+@Composable
 fun CardBody() {
     val context = LocalContext.current
     Scaffold { paddingValues ->
@@ -59,8 +121,9 @@ fun CardBody() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color(0xFF00C28B))
+                .background(Green)
                 .padding(horizontal = 16.dp, vertical = 24.dp)
+                .verticalScroll(rememberScrollState())
         ) {
 
             Row(
@@ -100,38 +163,18 @@ fun CardBody() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(Color.White, RoundedCornerShape(18.dp))
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_text),
-                        contentDescription = null,
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Text", fontWeight = FontWeight.Bold)
-                    Text("12 items", fontSize = 11.sp, color = Color.Gray)
-                }
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(Color.White, RoundedCornerShape(18.dp))
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_address),
-                        contentDescription = null,
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Address", fontWeight = FontWeight.Bold)
-                    Text("5 items", fontSize = 11.sp, color = Color.Gray)
-                }
+                HomeMenuCard(
+                    iconRes = R.drawable.ic_text,
+                    title = "Text",
+                    subtitle = "12 items",
+                    modifier = Modifier.weight(1f)
+                )
+                HomeMenuCard(
+                    iconRes = R.drawable.ic_address,
+                    title = "Address",
+                    subtitle = "5 items",
+                    modifier = Modifier.weight(1f)
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -140,43 +183,18 @@ fun CardBody() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(Color.White, RoundedCornerShape(18.dp))
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_character),
-                        contentDescription = null,
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Character", fontWeight = FontWeight.Bold)
-                    Text("15 items", fontSize = 11.sp, color = Color.Gray)
-                }
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(Color.White, RoundedCornerShape(18.dp))
-                        .padding(16.dp)
-                        .clickable {
-                            context.startActivity(
-                                Intent(context, BankCardActivity::class.java)
-                            )
-                        },
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_bankcard),
-                        contentDescription = null,
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Bank card", fontWeight = FontWeight.Bold)
-                    Text("8 items", fontSize = 11.sp, color = Color.Gray)
-                }
+                HomeMenuCard(
+                    iconRes = R.drawable.ic_character,
+                    title = "Character",
+                    subtitle = "15 items",
+                    modifier = Modifier.weight(1f)
+                )
+                HomeMenuCard(
+                    iconRes = R.drawable.ic_bankcard,
+                    title = "Bank card",
+                    subtitle = "8 items",
+                    modifier = Modifier.weight(1f)
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -185,62 +203,47 @@ fun CardBody() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(Color.White, RoundedCornerShape(18.dp))
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_password),
-                        contentDescription = null,
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Password", fontWeight = FontWeight.Bold)
-                    Text("23 items", fontSize = 11.sp, color = Color.Gray)
-                }
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(Color.White, RoundedCornerShape(18.dp))
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_logistics),
-                        contentDescription = null,
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Logistics", fontWeight = FontWeight.Bold)
-                    Text("10 items", fontSize = 11.sp, color = Color.Gray)
-                }
+                HomeMenuCard(
+                    iconRes = R.drawable.ic_password,
+                    title = "Password",
+                    subtitle = "23 items",
+                    modifier = Modifier.weight(1f)
+                )
+                HomeMenuCard(
+                    iconRes = R.drawable.ic_logistics,
+                    title = "Logistics",
+                    subtitle = "10 items",
+                    modifier = Modifier.weight(1f)
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(18.dp))
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_settings),
-                    contentDescription = null,
-                    tint = Color.Gray
-                )
-                Spacer(modifier = Modifier.size(12.dp))
-                Column {
-                    Text("Settings", fontWeight = FontWeight.Bold)
-                    Text(
-                        "Fingerprint, code and so on",
-                        fontSize = 11.sp,
-                        color = Color.Gray
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_settings),
+                        contentDescription = null,
+                        tint = Color.Gray
                     )
+                    Spacer(modifier = Modifier.size(12.dp))
+                    Column {
+                        Text("Settings", fontWeight = FontWeight.Bold)
+                        Text(
+                            "Fingerprint, code and so on",
+                            fontSize = 11.sp,
+                            color = Color.Gray
+                        )
+                    }
                 }
             }
         }
@@ -270,6 +273,7 @@ fun BankCardBody() {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp, vertical = 24.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
 
                 Row(
@@ -277,16 +281,14 @@ fun BankCardBody() {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
-                        Text(
-                            text = "Card",
-                            style = TextStyle(
-                                fontSize = 26.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
+                    Text(
+                        text = "Card",
+                        style = TextStyle(
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
                         )
-                    }
+                    )
                     Image(
                         painter = painterResource(R.drawable.ic_avatar),
                         contentDescription = null,
@@ -299,117 +301,80 @@ fun BankCardBody() {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(Color(0xFFFFB74D), Color(0xFFFFA726))
-                            ),
-                            RoundedCornerShape(18.dp)
-                        )
-                        .padding(16.dp)
-                ) {
-                    Text("Dribbble", color = Color.White, fontWeight = FontWeight.Bold)
-                    Text("Paidax", color = Color.White, fontSize = 13.sp)
-                }
+                GradientBankCard(
+                    title = "Dribbble",
+                    line1 = "Paidax",
+                    brush = Brush.verticalGradient(
+                        listOf(Color(0xFFFFB74D), Color(0xFFFFA726))
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(Color(0xFF64B5F6), Color(0xFF42A5F5))
-                            ),
-                            RoundedCornerShape(18.dp)
-                        )
-                        .padding(16.dp)
-                ) {
-                    Text("HJM", color = Color.White, fontWeight = FontWeight.Bold)
-                    Text("173****8838", color = Color.White, fontSize = 13.sp)
-                }
+                GradientBankCard(
+                    title = "HJM",
+                    line1 = "173****8838",
+                    brush = Brush.verticalGradient(
+                        listOf(Color(0xFF64B5F6), Color(0xFF42A5F5))
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(Color(0xFF81C784), Color(0xFF66BB6A))
-                            ),
-                            RoundedCornerShape(18.dp)
-                        )
-                        .padding(16.dp)
-                ) {
-                    Text("Tom", color = Color.White, fontWeight = FontWeight.Bold)
-                    Text(
-                        "Room 601, Building 2...",
-                        color = Color.White,
-                        fontSize = 13.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text("530****9320", color = Color.White, fontSize = 13.sp)
-                }
+                GradientBankCard(
+                    title = "Tom",
+                    line1 = "Room 601, Building 2...",
+                    line2 = "530****9320",
+                    brush = Brush.verticalGradient(
+                        listOf(Color(0xFF81C784), Color(0xFF66BB6A))
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(Color(0xFF7986CB), Color(0xFF5C6BC0))
-                            ),
-                            RoundedCornerShape(18.dp)
-                        )
-                        .padding(16.dp)
-                ) {
-                    Text("1882 **** **** 8695", color = Color.White, fontWeight = FontWeight.Bold)
-                    Text("ICBC", color = Color.White, fontSize = 13.sp)
-                    Text("Debit Card", color = Color.White, fontSize = 13.sp)
-                }
+                GradientBankCard(
+                    title = "1882 **** **** 8695",
+                    line1 = "ICBC",
+                    line2 = "Debit Card",
+                    brush = Brush.verticalGradient(
+                        listOf(Color(0xFF7986CB), Color(0xFF5C6BC0))
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(Color(0xFFFF8A65), Color(0xFFFF7043))
-                            ),
-                            RoundedCornerShape(18.dp)
-                        )
-                        .padding(16.dp)
-                ) {
-                    Text("Young", color = Color.White, fontWeight = FontWeight.Bold)
-                    Text(
-                        "This is the story of me and them, very...",
-                        color = Color.White,
-                        fontSize = 13.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                GradientBankCard(
+                    title = "Young",
+                    line1 = "This is the story of me and them, very...",
+                    brush = Brush.verticalGradient(
+                        listOf(Color(0xFFFF8A65), Color(0xFFFF7043))
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFFE1F5FE), RoundedCornerShape(18.dp))
-                        .padding(16.dp)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(18.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE1F5FE))
                 ) {
-                    Text(
-                        "Jinjun street, golden chrysanthemum Road, Haizhui District ...",
-                        fontSize = 13.sp,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            "Jinjun street, golden chrysanthemum Road, Haizhui District ...",
+                            fontSize = 13.sp,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(80.dp))
