@@ -1,10 +1,15 @@
 package com.example.demoapp
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,8 +20,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -36,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -72,6 +80,11 @@ fun SignInBody(){
     var visibility by remember { mutableStateOf(false) }
     var rememberDetail by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    val activity = context as Activity
+
+    val sharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
+
     Scaffold {
         values ->
         Column (
@@ -79,6 +92,7 @@ fun SignInBody(){
                 .padding(values)
                 .fillMaxSize()
                 .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Spacer(Modifier.height(100.dp))
 
@@ -202,8 +216,25 @@ fun SignInBody(){
                 Text("Forget Password?", color = Black.copy(0.25f))
             }
 
-            Button(onClick = {},
-                modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp).height(50.dp),
+            Button(onClick = {
+                val localEmail:String? = sharedPreferences.getString("email","")
+                val localPassword:String? = sharedPreferences.getString("password","")
+                if(email == localEmail){
+                    val intent = Intent(context, DashboardActivity::class.java)
+                    // Passing value in Navigation
+//                    intent.putExtra("email",email)
+//                    intent.putExtra("password",password)
+                    Toast.makeText(context,"Logged in Successfully!",Toast.LENGTH_SHORT)
+                    context.startActivity(intent)
+                    activity.finish()
+                } else {
+                    Toast.makeText(context,"Incorrect Credentials",Toast.LENGTH_SHORT)
+                }
+            },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp)
+                    .height(50.dp),
                 shape = RoundedCornerShape(10.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 15.dp)) {
                 Text("Log In")
@@ -216,7 +247,14 @@ fun SignInBody(){
                     append("Sign Up")
                 }
             },
-                modifier = Modifier.padding(vertical = 10.dp))
+                modifier = Modifier
+                    .padding(vertical = 10.dp)
+                    .clickable {
+                        val intent = Intent(context, RegistrationActivity::class.java)
+                        context.startActivity(intent)
+//                        activity.finish()
+                    }
+            )
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.example.demoapp
 
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.widget.Toast
@@ -17,8 +19,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -90,6 +94,7 @@ fun RegistrationBody(){
     var selectedDate by remember { mutableStateOf("") }
 
     val context = LocalContext.current
+    val activity = context as Activity
 
     val calender = Calendar.getInstance()
 
@@ -102,6 +107,10 @@ fun RegistrationBody(){
             selectedDate = "$day/${month + 1}/$year"
         }, year, month, day
     )
+
+    // Shared Preferences
+    val sharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
 
     // For Drop Down
 
@@ -127,6 +136,7 @@ fun RegistrationBody(){
                 .padding(it)
                 .fillMaxSize()
                 .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Spacer(Modifier.height(100.dp))
 
@@ -301,6 +311,20 @@ fun RegistrationBody(){
             Button(onClick = {
                 // Alert dialog trigger
                 showDialog = true
+
+                // check email is already same or not
+                var localEmail:String? = sharedPreferences.getString("email","")
+                if (localEmail==email){
+                    Toast.makeText(context,"This email has already been registered!",Toast.LENGTH_SHORT)
+                } else {
+                    // Putting values in shared preferences(local) if email is new
+                    editor.putString("email",email)
+                    editor.putString("password",password)
+                    editor.putString("date",selectedDate)
+                    editor.putString("gender",selectedOptionText)
+                    Toast.makeText(context,"Successfully registered!",Toast.LENGTH_SHORT)
+                    activity.finish()
+                }
             },
                 modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp).height(50.dp),
                 shape = RoundedCornerShape(10.dp),
