@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -54,18 +56,20 @@ fun DashboardBody(){
     // Putting passed value to variable using navigation
 //    val email = activity.intent.getStringExtra("email")
 //    val password = activity.intent.getStringExtra("password")
-    var sharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
 
-    val localEmail:String?= sharedPreferences.getString("email","")
-    var localPassword = sharedPreferences.getString("password","")
-    var localDate = sharedPreferences.getString("date","")
-    var localGender = sharedPreferences.getString("gender","")
+    // Local Data
+//    var sharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
+
+//    val localEmail:String?= sharedPreferences.getString("email","")
+//    var localPassword = sharedPreferences.getString("password","")
+//    var localDate = sharedPreferences.getString("date","")
+//    var localGender = sharedPreferences.getString("gender","")
 
     data class NavItem(val label:String,val icon:Int)
 
-    var selectedItem by remember { mutableStateOf(0) }
+    var selectedItem by remember { mutableIntStateOf(0) }
 
-    var navList = listOf(
+    val navList = listOf(
         NavItem("Home", R.drawable.outline_home_24),
         NavItem("Search", R.drawable.baseline_search_24),
         NavItem("Notification", R.drawable.outline_notifications_24),
@@ -132,15 +136,28 @@ fun DashboardBody(){
         }
     ){
         padding ->
-        Column (
-            modifier = Modifier.fillMaxSize().padding(padding),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+//        Column (
+//            modifier = Modifier.fillMaxSize().padding(padding),
+//            verticalArrangement = Arrangement.Center,
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            Text("Email: $localEmail")
+//            Text("Password: $localPassword")
+//            Text("Date: $localDate")
+//            Text("Gender: $localGender")
+//        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
         ) {
-            Text("Email: $localEmail")
-            Text("Password: $localPassword")
-            Text("Date: $localDate")
-            Text("Gender: $localGender")
+            when(selectedItem){
+                0 -> HomeScreen()
+                1 -> SearchScreen()
+                2 -> NotificationScreen()
+                3 -> ProfileScreen()
+                else -> HomeScreen()
+            }
         }
     }
 }
