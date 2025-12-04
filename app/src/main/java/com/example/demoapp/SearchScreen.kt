@@ -48,18 +48,18 @@ fun SearchScreen() {
     var query by remember { mutableStateOf("Headphones") }
 
     val products = listOf(
-        ProductItem("Crystal Headphones", "PKR 800", "PKR 1300", R.drawable.headphones),
-        ProductItem("Wireless Headphones", "PKR 800", "PKR 1300", R.drawable.headphones),
-        ProductItem("Sonic Headphones", "PKR 800", "PKR 1300", R.drawable.headphones),
-        ProductItem("Vintage Headphones", "PKR 800", "PKR 1300", R.drawable.headphones),
-        ProductItem("Multi Headphones", "PKR 800", "PKR 1300", R.drawable.headphones),
-        ProductItem("Wireless Earphones", "PKR 800", "PKR 1300", R.drawable.headphones),
-        ProductItem("Samsung Earphones", "PKR 800", "PKR 1300", R.drawable.headphones),
-        ProductItem("Fantech Earphones", "PKR 800", "PKR 1300", R.drawable.headphones),
-        ProductItem("Misio Earphones", "PKR 800", "PKR 1300", R.drawable.headphones),
-        ProductItem("Boat Earphones", "PKR 800", "PKR 1300", R.drawable.headphones),
-        ProductItem("Sony Headphones", "PKR 800", "PKR 1300", R.drawable.headphones),
-        ProductItem("Apple Headphones", "PKR 800", "PKR 1300", R.drawable.headphones)
+        ProductItem("Crystal Headphones", "NPR 800", "NPR 1300", R.drawable.headphones),
+        ProductItem("Wireless Headphones", "NPR 800", "NPR 1300", R.drawable.headphones),
+        ProductItem("Sonic Headphones", "NPR 800", "NPR 1300", R.drawable.headphones),
+        ProductItem("Vintage Headphones", "NPR 800", "NPR 1300", R.drawable.headphones),
+        ProductItem("Multi Headphones", "NPR 800", "NPR 1300", R.drawable.headphones),
+        ProductItem("Wireless Earphones", "NPR 800", "NPR 1300", R.drawable.headphones),
+        ProductItem("Samsung Earphones", "NPR 800", "NPR 1300", R.drawable.headphones),
+        ProductItem("Fantech Earphones", "NPR 800", "NPR 1300", R.drawable.headphones),
+        ProductItem("Misio Earphones", "NPR 800", "NPR 1300", R.drawable.headphones),
+        ProductItem("Boat Earphones", "NPR 800", "NPR 1300", R.drawable.headphones),
+        ProductItem("Sony Headphones", "NPR 800", "NPR 1300", R.drawable.headphones),
+        ProductItem("Apple Headphones", "NPR 800", "NPR 1300", R.drawable.headphones)
     )
 
     Scaffold { values ->
