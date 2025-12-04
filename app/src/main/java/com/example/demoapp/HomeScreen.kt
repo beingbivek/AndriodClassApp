@@ -127,7 +127,7 @@ fun HomeScreen() {
                         Text("St. no 8, KTM, Nepal", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                     }
                     Icon(
-                        painter = painterResource(R.drawable.baseline_arrow_back_ios_24),
+                        painter = painterResource(R.drawable.baseline_keyboard_arrow_right_24),
                         contentDescription = null
                     )
                 }
@@ -135,52 +135,9 @@ fun HomeScreen() {
 
             Spacer(modifier = Modifier.height(15.dp))
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(Color(0xFFFFD54F))
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Time for Special Deal", fontSize = 13.sp, color = Color.DarkGray)
-                        Text(
-                            "70% Off",
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFFCC0000)
-                        )
-                        Text(
-                            "Use voucher now while supplies available. Get extra 10% off on your first order.",
-                            fontSize = 11.sp,
-                            color = Color.DarkGray
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Button(
-                            onClick = { },
-                            shape = RoundedCornerShape(30.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Blue)
-                        ) {
-                            Text("Shop Now", fontSize = 12.sp, color = White)
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Image(
-                        painter = painterResource(R.drawable.wrapped_1),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(100.dp)
-                            .aspectRatio(1f),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
+            Image(
+                painter = painterResource(R.drawable.sale_banner),null
+            )
 
             Spacer(modifier = Modifier.height(18.dp))
 
