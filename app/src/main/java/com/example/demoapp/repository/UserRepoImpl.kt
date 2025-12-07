@@ -104,7 +104,7 @@ class UserRepoImpl : UserRepo{
                             allUsers.add(user)
                         }
                     }
-                    callback(true,"All users fetched",user)
+                    callback(true,"All users fetched",allUsers)
                 }
             }
 
