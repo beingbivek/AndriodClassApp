@@ -68,9 +68,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.example.demoapp.repository.UserRepoImpl
 import com.example.demoapp.ui.theme.Blue
 import com.example.demoapp.ui.theme.PurpleGrey80
 import com.example.demoapp.ui.theme.White
+import com.example.demoapp.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 class RegistrationActivity : ComponentActivity() {
@@ -85,6 +87,10 @@ class RegistrationActivity : ComponentActivity() {
 
 @Composable
 fun RegistrationBody(){
+
+    val userViewModel = remember { UserViewModel(UserRepoImpl()) }
+
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
