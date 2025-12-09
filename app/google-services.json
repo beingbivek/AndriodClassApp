@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "215466142732",
+    "firebase_url": "https://kotlinclassdemoapp-default-rtdb.firebaseio.com",
+    "project_id": "kotlinclassdemoapp",
+    "storage_bucket": "kotlinclassdemoapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215466142732:android:bc508ce2adcaf802129229",
+        "android_client_info": {
+          "package_name": "com.example.demoapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCikV54NtKKwi0PyCDGS6fGHo8azsTNT68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

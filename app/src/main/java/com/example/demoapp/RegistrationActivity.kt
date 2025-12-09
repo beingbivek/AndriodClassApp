@@ -68,6 +68,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.example.demoapp.model.UserModel
 import com.example.demoapp.repository.UserRepoImpl
 import com.example.demoapp.ui.theme.Blue
 import com.example.demoapp.ui.theme.PurpleGrey80
@@ -86,13 +87,18 @@ class RegistrationActivity : ComponentActivity() {
 }
 
 @Composable
-fun RegistrationBody(){
+fun RegistrationBody(userViewModel: UserViewModel? = null){
 
-    val userViewModel = remember { UserViewModel(UserRepoImpl()) }
+    // Only create UserViewModel when NOT in Preview
+    val uVM = userViewModel ?: remember {
+        UserViewModel(UserRepoImpl())
+    }
 
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
     var terms by remember { mutableStateOf(false) }
 
@@ -209,6 +215,40 @@ fun RegistrationBody(){
                 )
             )
 
+            OutlinedTextField(
+                value = firstName,
+                onValueChange = { data ->
+                    firstName = data
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp),
+                shape = RoundedCornerShape(15.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = White,
+                    unfocusedContainerColor = Blue.copy(0.01f),
+                    focusedIndicatorColor = Blue,
+                    unfocusedIndicatorColor = Color.Black.copy(0.25f)
+                )
+            )
+
+            OutlinedTextField(
+                value = lastName,
+                onValueChange = { data ->
+                    lastName = data
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp),
+                shape = RoundedCornerShape(15.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = White,
+                    unfocusedContainerColor = Blue.copy(0.01f),
+                    focusedIndicatorColor = Blue,
+                    unfocusedIndicatorColor = Color.Black.copy(0.25f)
+                )
+            )
+
             // Date picker code
 
             OutlinedTextField(
@@ -314,24 +354,87 @@ fun RegistrationBody(){
                 Text("I agree to Terms & Conditions.")
             }
 
-            Button(onClick = {
-                // Alert dialog trigger
-                showDialog = true
+            Button(
+                onClick = {
+                    if (!terms) {
+                        Toast.makeText(
+                            context,
+                            "please agree to terms &  conditions",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }else{
+                        uVM.register(email,password){
+                                success,message,userId->
+                            if(success){
+                                var model = UserModel(
+                                    userId = userId,
+                                    firstName = firstName,
+                                    lastName = lastName,
+                                    gender = selectedOptionText,
+                                    email = email,
+                                    dob = selectedDate
+                                )
+                                uVM.addUserToDatabase(
+                                    userId,model
+                                ){
+                                        success,message->
+                                    if(success){
+                                        Toast.makeText(
+                                            context,
+                                            message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
 
-                // check email is already same or not
-                var localEmail:String? = sharedPreferences.getString("email","")
-                if (localEmail==email){
-                    Toast.makeText(context,"This email has already been registered!",Toast.LENGTH_SHORT)
-                } else {
-                    // Putting values in shared preferences(local) if email is new
-                    editor.putString("email",email)
-                    editor.putString("password",password)
-                    editor.putString("date",selectedDate)
-                    editor.putString("gender",selectedOptionText)
-                    Toast.makeText(context,"Successfully registered!",Toast.LENGTH_SHORT)
-                    activity.finish()
-                }
-            },
+                                        activity.finish()
+                                    }else{
+                                        Toast.makeText(
+                                            context,
+                                            message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            }else{
+                                Toast.makeText(
+                                    context,
+                                    message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+//                        editor.putString("email",email)
+//                        editor.putString("password",password)
+//                        editor.putString("date",selectedDate)
+//
+//                        editor.apply()
+//                        Toast.makeText(
+//                            context,
+//                            "Success",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        activity.finish()
+
+                    }
+                },
+//                onClick = {
+//                // Alert dialog trigger
+//                showDialog = true
+//
+//                // check email is already same or not
+//                val localEmail:String? = sharedPreferences.getString("email","")
+//                if (localEmail==email){
+//                    Toast.makeText(context,"This email has already been registered!",Toast.LENGTH_SHORT)
+//                } else {
+//                    // Putting values in shared preferences(local) if email is new
+//                    editor.putString("email",email)
+//                    editor.putString("password",password)
+//                    editor.putString("date",selectedDate)
+//                    editor.putString("gender",selectedOptionText)
+//                    Toast.makeText(context,"Successfully registered!",Toast.LENGTH_SHORT)
+//                    activity.finish()
+//                }
+//            },
                 modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp).height(50.dp),
                 shape = RoundedCornerShape(10.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 15.dp)) {
