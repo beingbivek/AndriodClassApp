@@ -223,6 +223,7 @@ fun RegistrationBody(userViewModel: UserViewModel? = null){
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp),
+                placeholder = {Text("First Name")},
                 shape = RoundedCornerShape(15.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = White,
@@ -240,6 +241,7 @@ fun RegistrationBody(userViewModel: UserViewModel? = null){
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp),
+                placeholder = {Text("Last Name")},
                 shape = RoundedCornerShape(15.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = White,
