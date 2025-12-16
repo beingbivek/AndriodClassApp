@@ -76,24 +76,29 @@ class ProductRepoImpl: ProductRepo {
     }
 
     override fun getAllProducts(callback: (Boolean, String, List<ProductModel>?) -> Unit) {
-        ref.addValueEventListener(object : ValueEventListener{
+        ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()){
-                    var allProducts = mutableListOf<ProductModel>()
-                    for(data in snapshot.children){
-                        val user = snapshot.getValue(ProductModel::class.java)
-                        if(user!=null){
-                            allProducts.add(user)
+                if (snapshot.exists()) {
+
+                    val allProducts = mutableListOf<ProductModel>()
+
+                    for (data in snapshot.children) {
+                        val product = data.getValue(ProductModel::class.java)   // ✅ FIXED
+                        if (product != null) {
+                            allProducts.add(product)
                         }
                     }
-                    callback(true,"All products fetched",allProducts)
+
+                    callback(true, "All products fetched", allProducts)
+                } else {
+                    callback(true, "No products found", emptyList())
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                callback(false,"${error.message}",null)
+                callback(false, error.message, null)
             }
-
         })
     }
+
 }

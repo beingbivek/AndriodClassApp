@@ -2,18 +2,16 @@ package com.example.demoapp.model
 
 data class ProductModel(
     var productId : String = "",
-    val productName : String = "",
-    val quantity : String = "",
-    val rate : String = "",
-    val imageURL : String = "",
+    var name : String = "",
+    var price : Double = 0.0,
+    var description : String = "",
 ){
     fun toMap() : Map<String, Any?>{
         return  mapOf(
             "productId" to productId,
-            "productName" to productName,
-            "quantity" to quantity,
-            "rate" to rate,
-            "imageURL" to imageURL,
+            "name" to name,
+            "price" to price,
+            "description" to description,
         )
     }
 }
