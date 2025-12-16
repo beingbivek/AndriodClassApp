@@ -27,8 +27,8 @@ class UserViewModel(val repo: UserRepo): ViewModel() {
     val users : MutableLiveData<UserModel?>
         get() = _users
 
-    private val _allUsers = MutableLiveData<List<UserModel?>>()
-    val allUsers : MutableLiveData<List<UserModel?>>
+    private val _allUsers = MutableLiveData<List<UserModel>?>()
+    val allUsers : MutableLiveData<List<UserModel>?>
         get() = _allUsers
 
     private val _loading = MutableLiveData<Boolean>()
