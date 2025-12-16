@@ -57,11 +57,14 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.demoapp.repository.UserRepo
+import com.example.demoapp.repository.UserRepoImpl
 import com.example.demoapp.ui.theme.Black
 import com.example.demoapp.ui.theme.Blue
 import com.example.demoapp.ui.theme.PurpleGrey40
 import com.example.demoapp.ui.theme.PurpleGrey80
 import com.example.demoapp.ui.theme.White
+import com.example.demoapp.viewmodel.UserViewModel
 
 class SignInActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,10 +83,12 @@ fun SignInBody(){
     var visibility by remember { mutableStateOf(false) }
     var rememberDetail by remember { mutableStateOf(false) }
 
+    val userViewModel= remember { UserViewModel(UserRepoImpl()) }
+
     val context = LocalContext.current
     val activity = context as Activity
 
-    val sharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
+//    val sharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
 
     Scaffold {
         values ->
@@ -217,19 +222,34 @@ fun SignInBody(){
             }
 
             Button(onClick = {
-                val localEmail:String? = sharedPreferences.getString("email","")
-                val localPassword:String? = sharedPreferences.getString("password","")
-                if(email == localEmail){
-                    val intent = Intent(context, DashboardActivity::class.java)
-                    // Passing value in Navigation
-//                    intent.putExtra("email",email)
-//                    intent.putExtra("password",password)
-                    Toast.makeText(context,"Logged in Successfully!",Toast.LENGTH_SHORT)
-                    context.startActivity(intent)
-                    activity.finish()
-                } else {
-                    Toast.makeText(context,"Incorrect Credentials",Toast.LENGTH_SHORT)
+                if(email != "" && password != ""){
+                    userViewModel.login(email,password){
+                        success,message->
+                        if(success){
+                            val intent = Intent(context, DashboardActivity::class.java)
+                            Toast.makeText(context,message,Toast.LENGTH_SHORT)
+                            context.startActivity(intent)
+                            activity.finish()
+                        } else{
+                            Toast.makeText(context,message,Toast.LENGTH_SHORT)
+                        }
+                    }
+                }else{
+                    Toast.makeText(context,"Email or Password not entered",Toast.LENGTH_SHORT)
                 }
+//                val localEmail:String? = sharedPreferences.getString("email","")
+//                val localPassword:String? = sharedPreferences.getString("password","")
+//                if(email == localEmail){
+//                    val intent = Intent(context, DashboardActivity::class.java)
+//                    // Passing value in Navigation
+////                    intent.putExtra("email",email)
+////                    intent.putExtra("password",password)
+//                    Toast.makeText(context,"Logged in Successfully!",Toast.LENGTH_SHORT)
+//                    context.startActivity(intent)
+//                    activity.finish()
+//                } else {
+//                    Toast.makeText(context,"Incorrect Credentials",Toast.LENGTH_SHORT)
+//                }
             },
                 modifier = Modifier
                     .fillMaxWidth()
