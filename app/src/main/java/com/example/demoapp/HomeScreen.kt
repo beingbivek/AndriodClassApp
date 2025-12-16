@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -48,9 +49,10 @@ import com.example.demoapp.viewmodel.ProductViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.CardDefaults.cardElevation
 
 
-data class CategoryItem(val name: String, val iconRes: Int)
+//data class CategoryItem(val name: String, val iconRes: Int)
 data class ProductItem(val name: String, val price: String, val oldPrice: String, val imageRes: Int)
 
 @Composable
@@ -108,47 +110,90 @@ fun HomeScreen() {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp),
+                    .padding(vertical = 6.dp)
+                    .background(Color.Transparent),
+                shape = RoundedCornerShape(18.dp),
                 colors = CardColors(
-                    containerColor = CardBGColor,
+                    containerColor = White,
                     contentColor = Color.Black,
                     disabledContentColor = Color.Gray,
                     disabledContainerColor = Color.DarkGray
+                ),
+                elevation = cardElevation(
+                    defaultElevation = 6.dp
                 )
             ) {
+
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .fillParentMaxHeight()
-                        .padding(5.dp)
+                        .fillMaxWidth()
+                        .padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+
+                    // LEFT SECTION (product info)
                     Column(
-                        Modifier.weight(3f),
-                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.weight(3f)
                     ) {
-                        Text(data.name, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                        Text("Rs.${data.price}", fontWeight = FontWeight.Bold)
-                        Text(data.description)
+                        Text(
+                            text = data.name,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+
+                        Spacer(Modifier.height(4.dp))
+
+                        Text(
+                            text = "Rs. ${data.price}",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Blue
+                        )
+
+                        Spacer(Modifier.height(3.dp))
+
+                        Text(
+                            text = data.description,
+                            fontSize = 13.sp,
+                            color = Color.Gray
+                        )
                     }
+
+                    // RIGHT ICONS (edit + delete)
                     Row(
-                        Modifier.weight(1f),
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+
                         IconButton(
                             onClick = {
                                 productModel = data
                                 showEditDialog = true
-                            }
+                            },
+                            modifier = Modifier.size(38.dp)
                         ) {
-                            Icon(Icons.Default.Edit, null)
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = "Edit",
+                                tint = Blue
+                            )
                         }
+
                         IconButton(
                             onClick = {
                                 selectedProduct = data.productId
                                 showDialog = true
-                            }
+                            },
+                            modifier = Modifier.size(38.dp)
                         ) {
-                            Icon(Icons.Default.Delete, null)
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = "Delete",
+                                tint = Color.Red.copy(alpha = 0.8f)
+                            )
                         }
                     }
                 }
