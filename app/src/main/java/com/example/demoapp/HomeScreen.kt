@@ -31,7 +31,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -50,6 +49,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CardDefaults.cardElevation
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.Alignment
 
 
 //data class CategoryItem(val name: String, val iconRes: Int)
@@ -85,18 +86,23 @@ fun HomeScreen() {
     val activity = context as Activity
 
     val products = productViewModel.allProduct.observeAsState(emptyList())
+    val product = productViewModel.product.observeAsState(null)
     val loading = productViewModel.loading.observeAsState(false)
-    var showDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
     var selectedProduct by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
-    var productModel = ProductModel()
 
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(product.value) {
         productViewModel.getAllProducts()
+        product.value?.let {
+            name = it.name
+            price = it.price.toString()
+            desc = it.description
+        }
     }
     LazyColumn(
         modifier = Modifier
@@ -104,138 +110,36 @@ fun HomeScreen() {
             .background(BgColor)
             .padding(15.dp)
     ) {
-        items(products.value!!.size)
-        { index ->
-            val data = products.value!![index]
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp)
-                    .background(Color.Transparent),
-                shape = RoundedCornerShape(18.dp),
-                colors = CardColors(
-                    containerColor = White,
-                    contentColor = Color.Black,
-                    disabledContentColor = Color.Gray,
-                    disabledContainerColor = Color.DarkGray
-                ),
-                elevation = cardElevation(
-                    defaultElevation = 6.dp
-                )
-            ) {
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    // LEFT SECTION (product info)
-                    Column(
-                        modifier = Modifier.weight(3f)
-                    ) {
-                        Text(
-                            text = data.name,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-
-                        Spacer(Modifier.height(4.dp))
-
-                        Text(
-                            text = "Rs. ${data.price}",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = Blue
-                        )
-
-                        Spacer(Modifier.height(3.dp))
-
-                        Text(
-                            text = data.description,
-                            fontSize = 13.sp,
-                            color = Color.Gray
-                        )
-                    }
-
-                    // RIGHT ICONS (edit + delete)
-                    Row(
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        IconButton(
-                            onClick = {
-                                productModel = data
-                                showEditDialog = true
-                            },
-                            modifier = Modifier.size(38.dp)
-                        ) {
-                            Icon(
-                                Icons.Default.Edit,
-                                contentDescription = "Edit",
-                                tint = Blue
-                            )
-                        }
-
-                        IconButton(
-                            onClick = {
-                                selectedProduct = data.productId
-                                showDialog = true
-                            },
-                            modifier = Modifier.size(38.dp)
-                        ) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = "Delete",
-                                tint = Color.Red.copy(alpha = 0.8f)
-                            )
-                        }
-                    }
-                }
-            }
-            Spacer(Modifier.height(20.dp))
-
-            if (showDialog) AlertDialog(
-                {
-                    showDialog = false
-                }, {
-                    Button(onClick = {
-                        productViewModel.deleteProduct(selectedProduct) { success, msg ->
-                            if (success) {
-                                showDialog = false
-                                productViewModel.getAllProducts()
-                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                            }else {
-                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        item {
+            if (showDeleteDialog) {
+                AlertDialog(
+                    {
+                        showDeleteDialog = false
+                    }, {
+                        Button(onClick = {
+                            productViewModel.deleteProduct(selectedProduct) { success, msg ->
+                                if (success) {
+                                    showDeleteDialog = false
+                                    productViewModel.getAllProducts()
+                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                }else {
+                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                }
                             }
+                        }) {
+                            Text("DELETE")
                         }
-                    }) {
-                        Text("DELETE")
-                    }
-                }, dismissButton = {
-                    Button(onClick = { showDialog = false }) {
-                        Text("Cancel")
-                    }
-                },
-                text = { Text("Are you sure you want to Delete?") },
-                title = { Text("Warning!") }
-            )
+                    }, dismissButton = {
+                        Button(onClick = { showDeleteDialog = false }) {
+                            Text("Cancel")
+                        }
+                    },
+                    text = { Text("Are you sure you want to Delete?") },
+                    title = { Text("Warning!") }
+                )
+            }
+
             if (showEditDialog) {
-
-                // Load initial values ONCE
-                LaunchedEffect(showEditDialog) {
-                    if (showEditDialog) {
-                        name = productModel.name
-                        price = productModel.price.toString()
-                        desc = productModel.description
-                    }
-                }
-
                 AlertDialog(
                     onDismissRequest = { showEditDialog = false },
 
@@ -299,7 +203,7 @@ fun HomeScreen() {
                             if (name.isNotEmpty() && price.isNotEmpty() && desc.isNotEmpty()) {
 
                                 val updatedModel = ProductModel(
-                                    productId = productModel.productId,
+                                    productId = product.value!!.productId,
                                     name = name,
                                     price = price.toDoubleOrNull() ?: 0.0,
                                     description = desc
@@ -330,6 +234,116 @@ fun HomeScreen() {
                 )
             }
         }
+
+        if(loading.value){
+            item {
+                Column(
+                    Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) { }
+                CircularProgressIndicator()
+            }
+        }else{
+            items(products.value!!.size)
+            { index ->
+                val data = products.value!![index]
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 6.dp)
+                        .background(Color.Transparent),
+                    shape = RoundedCornerShape(18.dp),
+                    colors = CardColors(
+                        containerColor = White,
+                        contentColor = Color.Black,
+                        disabledContentColor = Color.Gray,
+                        disabledContainerColor = Color.DarkGray
+                    ),
+                    elevation = cardElevation(
+                        defaultElevation = 6.dp
+                    )
+                ) {
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
+                        // LEFT SECTION (product info)
+                        Column(
+                            modifier = Modifier.weight(3f)
+                        ) {
+                            Text(
+                                text = data.name,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+
+                            Spacer(Modifier.height(4.dp))
+
+                            Text(
+                                text = "Rs. ${data.price}",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Blue
+                            )
+
+                            Spacer(Modifier.height(3.dp))
+
+                            Text(
+                                text = data.description,
+                                fontSize = 13.sp,
+                                color = Color.Gray
+                            )
+                        }
+
+                        // RIGHT ICONS (edit + delete)
+                        Row(
+                            modifier = Modifier.weight(1f),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            IconButton(
+                                onClick = {
+                                    showEditDialog = true
+                                    productViewModel.getProductById(data.productId)
+                                },
+                                modifier = Modifier.size(38.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Edit,
+                                    contentDescription = "Edit",
+                                    tint = Blue
+                                )
+                            }
+
+                            IconButton(
+                                onClick = {
+                                    selectedProduct = data.productId
+                                    showDeleteDialog = true
+                                },
+                                modifier = Modifier.size(38.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    contentDescription = "Delete",
+                                    tint = Color.Red.copy(alpha = 0.8f)
+                                )
+                            }
+                        }
+                    }
+                }
+
+
+            }
+        }
+
 
 
 //        item {
